@@ -1,7 +1,14 @@
 const form = document.querySelector('#consult-form');
 const submitButton = form ? form.querySelector('button[type="submit"]') : null;
 const selectedTypeInput = document.querySelector('#selected-type');
-const choiceSelect = document.querySelector('#choice-select');
+const choiceSelectBtn = document.querySelector('#choice-select-btn');
+const choiceSelectValue = document.querySelector('#choice-select-value');
+const choiceOptionsList = document.querySelector('#choice-options');
+const choiceOptionEls = choiceOptionsList
+    ? Array.from(choiceOptionsList.querySelectorAll('.choice-option'))
+    : [];
+const DEFAULT_CHOICE_VALUE = '1개~2개 임플란트';
+const eventRemainingCountEl = document.querySelector('#event-remaining-count');
 const consultationList = document.querySelector('#consultation-list');
 const consultationListEmpty = document.querySelector('#consultation-list-empty');
 const API_URL = form ? form.getAttribute('action') : '';
@@ -104,6 +111,49 @@ function updateCountdown() {
 if (countdownTimerEl) {
     updateCountdown();
     setInterval(updateCountdown, 1000);
+}
+
+// 남은 이벤트 수량: 78개에서 40개까지 줄어들었다가 다시 78개로 돌아가 반복
+const EVENT_REMAINING_START = 78;
+const EVENT_REMAINING_END = 40;
+const EVENT_REMAINING_INTERVAL_MS = 4500;
+
+function startEventRemainingCountdown() {
+    if (!eventRemainingCountEl) {
+        return;
+    }
+
+    let current = EVENT_REMAINING_START;
+    eventRemainingCountEl.textContent = current;
+
+    setInterval(() => {
+        current -= 1;
+        if (current < EVENT_REMAINING_END) {
+            current = EVENT_REMAINING_START;
+        }
+        eventRemainingCountEl.textContent = current;
+    }, EVENT_REMAINING_INTERVAL_MS);
+}
+
+startEventRemainingCountdown();
+
+// event-remaining 배지 가로 길이를 choice-heading 배지와 동일하게 맞춘다 (텍스트 길이가 서로 달라 CSS만으론 맞출 수 없음)
+function syncEventRemainingWidth() {
+    const heading = document.querySelector('.choice-heading');
+    const badge = document.querySelector('.event-remaining');
+
+    if (!heading || !badge) {
+        return;
+    }
+
+    badge.style.width = `${heading.getBoundingClientRect().width}px`;
+}
+
+syncEventRemainingWidth();
+window.addEventListener('resize', syncEventRemainingWidth);
+
+if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(syncEventRemainingWidth);
 }
 
 // 허용하는 지역번호/통신사 번호 (앞 2~3자리)
@@ -239,12 +289,70 @@ function isSuspiciousPhoneNumber(phone) {
     return SEQUENTIAL_PATTERNS.includes(last8);
 }
 
-function syncSelectedType() {
-    if (!selectedTypeInput) {
+function setChoiceValue(value) {
+    if (choiceSelectValue) {
+        choiceSelectValue.textContent = value;
+    }
+
+    choiceOptionEls.forEach((option) => {
+        const isSelected = option.dataset.value === value;
+        option.classList.toggle('is-selected', isSelected);
+        option.setAttribute('aria-selected', String(isSelected));
+    });
+
+    if (selectedTypeInput) {
+        selectedTypeInput.value = value;
+    }
+}
+
+function openChoiceOptions() {
+    if (!choiceOptionsList || !choiceSelectBtn) {
         return;
     }
 
-    selectedTypeInput.value = (choiceSelect && choiceSelect.value) || '1개~2개 임플란트';
+    choiceOptionsList.hidden = false;
+    choiceSelectBtn.setAttribute('aria-expanded', 'true');
+    choiceSelectBtn.classList.add('is-open');
+}
+
+function closeChoiceOptions() {
+    if (!choiceOptionsList || !choiceSelectBtn) {
+        return;
+    }
+
+    choiceOptionsList.hidden = true;
+    choiceSelectBtn.setAttribute('aria-expanded', 'false');
+    choiceSelectBtn.classList.remove('is-open');
+}
+
+if (choiceSelectBtn && choiceOptionsList) {
+    choiceSelectBtn.addEventListener('click', () => {
+        const isOpen = choiceSelectBtn.getAttribute('aria-expanded') === 'true';
+        if (isOpen) {
+            closeChoiceOptions();
+        } else {
+            openChoiceOptions();
+        }
+    });
+
+    choiceOptionEls.forEach((option) => {
+        option.addEventListener('click', () => {
+            setChoiceValue(option.dataset.value);
+            closeChoiceOptions();
+        });
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!choiceSelectBtn.contains(event.target) && !choiceOptionsList.contains(event.target)) {
+            closeChoiceOptions();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeChoiceOptions();
+        }
+    });
 }
 
 function maskName(value) {
@@ -577,7 +685,7 @@ async function submitConsultForm(event) {
     // rate_limited/already_applied를 제외한 나머지(성공/서버 내부 오류/네트워크 오류)는 결과와 무관하게 완료 메시지를 유지한다.
     // 서버 내부 오류는 doPost에서 DB로스 시트로 백업되므로 신청 데이터 자체는 유실되지 않는다.
     form.reset();
-    syncSelectedType();
+    setChoiceValue(DEFAULT_CHOICE_VALUE);
     loadConsultationList();
 
     window.dataLayer = window.dataLayer || [];
@@ -590,11 +698,7 @@ async function submitConsultForm(event) {
     });
 }
 
-if (choiceSelect) {
-    choiceSelect.addEventListener('change', syncSelectedType);
-}
-
-syncSelectedType();
+setChoiceValue(DEFAULT_CHOICE_VALUE);
 loadConsultationList();
 
 if (form) {

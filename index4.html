@@ -30,7 +30,7 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
-   <section class="consult-hero-img">
+    <section class="consult-hero-img">
         <p>
             <img src="https://knockknockplant.co.kr/landing/00-test/landing_v03/img-02.jpg" alt="">
         </p>
@@ -40,13 +40,23 @@
         <div class="item__top">
             <h2 class="choice-heading">👉 원하시는 항목을 선택해 주세요</h2>
         </div>
-
+        <div class="event-remaining">
+            <span class="event-remaining__dot" aria-hidden="true"></span>
+            <p class="event-remaining__text">남은 이벤트 수량: <span class="event-remaining__count"
+                    id="event-remaining-count">78</span><span class="event-remaining__unit">개</span></p>
+        </div>
         <div class="choice-select-wrap">
-            <select class="choice-select" id="choice-select" name="choice" aria-label="상담 종류 선택">
-                <option value="1개~2개 임플란트" selected>1개~2개 임플란트</option>
-                <option value="여러 개 임플란트">여러 개 임플란트</option>
-                <option value="전체 임플란트">전체 임플란트</option>
-            </select>
+            <button type="button" class="choice-select" id="choice-select-btn" aria-haspopup="listbox"
+                aria-expanded="false">
+                <span class="choice-select__value" id="choice-select-value">1개~2개 임플란트</span>
+                <span class="choice-select__arrow" aria-hidden="true"></span>
+            </button>
+            <ul class="choice-options" id="choice-options" role="listbox" aria-label="상담 종류 선택" hidden>
+                <li class="choice-option is-selected" role="option" aria-selected="true" data-value="1개~2개 임플란트">1개~2개
+                    임플란트</li>
+                <li class="choice-option" role="option" aria-selected="false" data-value="여러 개 임플란트">여러 개 임플란트</li>
+                <li class="choice-option" role="option" aria-selected="false" data-value="전체 임플란트">전체 임플란트</li>
+            </ul>
         </div>
     </section>
 
@@ -129,7 +139,7 @@
             </div>
         </form>
     </section>
-    
+
     <div class="modal-overlay" id="app-modal" hidden>
         <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="app-modal-title">
             <div class="modal-icon" id="app-modal-icon">✅</div>
@@ -139,7 +149,7 @@
         </div>
     </div>
 
-    <script src="./js/index4.js"></script
+    <script src="./js/index4.js"></script>
 </body>
 
 </html>
