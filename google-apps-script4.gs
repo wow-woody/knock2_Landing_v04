@@ -110,16 +110,17 @@ function findMostRecentApplicationDate(spreadsheet, phone) {
         return null;
     }
 
-    const phoneColumn = sheet.getRange(2, phoneColumnIndex, lastRow - 1, 1);
-    const matches = phoneColumn.createTextFinder(phone).matchEntireCell(true).findAll();
-
-    if (matches.length === 0) {
-        return null;
-    }
+    // 매칭된 셀마다 getValue()를 개별 호출하면 Apps Script 서비스 호출이 그만큼 늘어나 느려지므로,
+    // 데이터 범위를 getValues() 한 번으로 통째로 읽어 메모리에서 비교한다
+    const values = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
 
     let latest = null;
-    matches.forEach((cell) => {
-        const timestamp = sheet.getRange(cell.getRow(), timestampColumnIndex).getValue();
+    values.forEach((row) => {
+        if (row[phoneColumnIndex - 1] !== phone) {
+            return;
+        }
+
+        const timestamp = row[timestampColumnIndex - 1];
         if (timestamp instanceof Date && (!latest || timestamp > latest)) {
             latest = timestamp;
         }

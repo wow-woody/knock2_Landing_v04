@@ -644,6 +644,14 @@ async function submitConsultForm(event) {
         submitButton.textContent = '전송 중...';
     }
 
+    // 서버 응답(구글 앱스스크립트 왕복)을 기다리는 동안 모달을 먼저 열어 체감 지연을 줄인다.
+    // 응답이 오면 아래 showModal() 호출들이 이 모달의 내용만 결과에 맞게 덮어쓴다.
+    showModal({
+        icon: '⏳',
+        title: '접수 처리 중입니다',
+        message: '잠시만 기다려주세요.',
+    });
+
     let resultText = '';
     try {
         const response = await fetch(API_URL, {
