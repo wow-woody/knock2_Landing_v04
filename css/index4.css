@@ -369,14 +369,14 @@ body {
     border-radius: 999px;
 }
 
-.section-heading h2 {
+/* .section-heading h2 {
     margin: 0;
     font-size: 2rem;
     font-weight: 700;
     letter-spacing: -0.04em;
     line-height: 1.15;
     color: var(--gold);
-}
+} */
 
 .choice-heading {
     display: flex;
@@ -576,7 +576,7 @@ body {
     font-weight: 800;
 }
 
-.section-heading {
+/* .section-heading {
     display: grid;
     text-align: center;
 }
@@ -598,7 +598,7 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: clamp(0.65rem, calc(3.7vw - 0.08rem), 0.9rem);
-}
+} */
 
 .consult-form {
     display: grid;
@@ -933,6 +933,60 @@ body {
     color: var(--sub);
 }
 
+/* ---- 하단 사업자 정보 ---- */
+.consult-footer {
+    margin-top: 20px;
+    background: rgba(14, 107, 99, 0.04);
+    /* border: 2px solid var(--navy-line); */
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.consult-footer__title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: 0;
+    background: none;
+    color: var(--sub);
+    font-family: inherit;
+    font-size: 0.78rem;
+    letter-spacing: -0.03em;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.consult-footer__title:hover {
+    color: var(--ink);
+}
+
+.consult-footer__chevron {
+    width: 14px;
+    height: 14px;
+    color: currentColor;
+    transition: transform 0.2s ease;
+}
+
+.consult-footer__title[aria-expanded='true'] .consult-footer__chevron {
+    transform: rotate(180deg);
+}
+
+.consult-footer__text {
+    margin: 0;
+    padding: 0 16px 14px;
+    border-top: 1px solid rgba(14, 107, 99, 0.1);
+    padding-top: 12px;
+    color: var(--sub);
+    font-size: 0.74rem;
+    line-height: 1.6;
+    letter-spacing: -0.03em;
+    word-break: keep-all;
+    text-align: center;
+}
+
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -1030,9 +1084,9 @@ body {
         font-size: 0.8rem;
     }
 
-    .section-heading {
+    /* .section-heading {
         text-align: center;
-    }
+    } */
 }
 
 /* 아이폰 14 Pro(393px) 등 좁은 폰 화면 대응 */

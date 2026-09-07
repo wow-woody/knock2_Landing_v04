@@ -248,6 +248,17 @@ if (agreeDetailToggle && agreeDetailPanel) {
     });
 }
 
+const footerDetailToggle = document.querySelector('#footer-detail-toggle');
+const footerDetailText = document.querySelector('#footer-detail-text');
+
+if (footerDetailToggle && footerDetailText) {
+    footerDetailToggle.addEventListener('click', () => {
+        const isExpanded = footerDetailToggle.getAttribute('aria-expanded') === 'true';
+        footerDetailToggle.setAttribute('aria-expanded', String(!isExpanded));
+        footerDetailText.hidden = isExpanded;
+    });
+}
+
 function normalizePhone(value) {
     return value.replace(/[^0-9]/g, '');
 }

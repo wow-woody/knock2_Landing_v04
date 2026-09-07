@@ -63,11 +63,11 @@
     <section class="form-section">
         <p class="eyebrow">📝 상담 신청</p>
 
-        <div class="section-heading">
+        <!-- <div class="section-heading">
             <h2>임플란트 20만원 혜택 받으세요</h2>
             <p class="sub-title">(서울 / 수도권 거주자 한정)</p>
             <p class="desc">상담은 무료이며, 추가 비용 없이 안내된 금액 그대로 진행됩니다</p>
-        </div>
+        </div> -->
 
         <!--구글시트탭: 웹앱 URL 주소-->
         <form class="consult-form" id="consult-form"
@@ -98,7 +98,7 @@
                 </div>
             </label>
 
-            <button class="btn" type="submit">맞춤 견적 알아보기</button>
+            <button class="btn" type="submit">맞춤 견적 신청하기</button>
 
             <button type="button" id="debug-force-fail-btn" class="btn"
                 style="display:none; background:#666; margin-bottom:10px;">🧪 일부러 실패시키기 (테스트용)</button>
@@ -139,7 +139,18 @@
             </div>
         </form>
     </section>
-
+    <section class="consult-footer">
+        <button type="button" class="consult-footer__title" id="footer-detail-toggle" aria-expanded="false"
+            aria-controls="footer-detail-text">
+            <span>사업자정보</span>
+            <svg class="consult-footer__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </button>
+        <p class="consult-footer__text" id="footer-detail-text" hidden>상호명 : 똑똑플란트치과의원 | 대표자 : 손동국 | 사업자등록번호 :
+            844-58-00681</p>
+    </section>
     <div class="modal-overlay" id="app-modal" hidden>
         <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="app-modal-title">
             <div class="modal-icon" id="app-modal-icon">✅</div>
