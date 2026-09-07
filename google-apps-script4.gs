@@ -39,21 +39,29 @@ function getOrCreateSheetWithHeaders(spreadsheet, sheetName, headers) {
 }
 
 // 시트 1행(헤더)을 읽어서 { 헤더이름: 열번호(1부터 시작) } 형태로 돌려준다
+// 실제 헤더 개수(getLastColumn())를 별도로 조회하면 왕복 호출이 하나 더 늘어나므로,
+// 충분히 넉넉한 고정 너비로 한 번에 읽고 빈 칸은 무시한다 (현재 시트는 헤더가 5~6개뿐)
+const MAX_HEADER_COLUMNS = 20;
+
 function getHeaderColumnIndexes(sheet) {
-    const headerRow = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const headerRow = sheet.getRange(1, 1, 1, MAX_HEADER_COLUMNS).getValues()[0];
     const indexByName = {};
 
     headerRow.forEach((headerName, i) => {
-        indexByName[String(headerName).trim()] = i + 1;
+        const trimmed = String(headerName).trim();
+        if (trimmed) {
+            indexByName[trimmed] = i + 1;
+        }
     });
 
     return indexByName;
 }
 
 // { 헤더이름: 값 } 객체를 받아서, 실제 헤더 순서에 맞춰 한 행으로 추가한다. 헤더 순서가 바뀌어도 이 함수를 쓰는 코드는 그대로 둬도 된다
-function appendRowByHeader(sheet, valuesByHeader) {
-    const indexByName = getHeaderColumnIndexes(sheet);
-    const rowArray = new Array(sheet.getLastColumn()).fill('');
+// indexByName은 호출부에서 이미 읽어온 값을 넘겨받는다 (매 호출마다 헤더를 다시 읽으면 그만큼 왕복 호출이 늘어남)
+function appendRowByHeader(sheet, valuesByHeader, indexByName) {
+    const columnCount = Math.max(0, ...Object.values(indexByName));
+    const rowArray = new Array(columnCount).fill('');
 
     Object.keys(valuesByHeader).forEach((headerName) => {
         const columnIndex = indexByName[headerName];
@@ -63,7 +71,6 @@ function appendRowByHeader(sheet, valuesByHeader) {
     });
 
     sheet.appendRow(rowArray);
-    return indexByName;
 }
 
 function parseRequestData(e) {
@@ -94,15 +101,14 @@ function getOrCreateIntegratedSheet(spreadsheet) {
 const DUPLICATE_BLOCK_DAYS = 7;
 
 // 통합 시트에서 같은 연락처의 가장 최근 신청시간을 찾는다. 없으면 null.
-function findMostRecentApplicationDate(spreadsheet, phone) {
-    const sheet = getOrCreateIntegratedSheet(spreadsheet);
+// sheet/indexByName은 호출부(doPost)에서 이미 읽어온 것을 그대로 받는다 (시트 재조회·헤더 재조회 방지)
+function findMostRecentApplicationDate(sheet, indexByName, phone) {
     const lastRow = sheet.getLastRow();
 
     if (lastRow < 2) {
         return null;
     }
 
-    const indexByName = getHeaderColumnIndexes(sheet);
     const phoneColumnIndex = indexByName['연락처'];
     const timestampColumnIndex = indexByName['신청시간'];
 
@@ -112,7 +118,8 @@ function findMostRecentApplicationDate(spreadsheet, phone) {
 
     // 매칭된 셀마다 getValue()를 개별 호출하면 Apps Script 서비스 호출이 그만큼 늘어나 느려지므로,
     // 데이터 범위를 getValues() 한 번으로 통째로 읽어 메모리에서 비교한다
-    const values = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
+    const columnCount = Math.max(...Object.values(indexByName));
+    const values = sheet.getRange(2, 1, lastRow - 1, columnCount).getValues();
 
     let latest = null;
     values.forEach((row) => {
@@ -133,20 +140,31 @@ function findMostRecentApplicationDate(spreadsheet, phone) {
 function logToFallbackSheet(spreadsheet, name, phone, selectedType, reason) {
     try {
         const fallbackSheet = getOrCreateFallbackSheet(spreadsheet);
-        const number = fallbackSheet.getLastRow();
-        const indexByName = appendRowByHeader(fallbackSheet, {
-            번호: number,
-            신청시간: new Date(),
-            이름: name,
-            연락처: phone,
-            상담유형: selectedType,
-            유실사유: reason,
-        });
+        const indexByName = getHeaderColumnIndexes(fallbackSheet);
+        const lastRowBeforeAppend = fallbackSheet.getLastRow();
+        const number = lastRowBeforeAppend;
+
+        appendRowByHeader(
+            fallbackSheet,
+            {
+                번호: number,
+                신청시간: new Date(),
+                이름: name,
+                연락처: phone,
+                상담유형: selectedType,
+                유실사유: reason,
+            },
+            indexByName,
+        );
+
+        // 스크립트 락을 잡고 있는 동안에는 동시 쓰기가 없으므로, 방금 추가된 행 번호는
+        // getLastRow()를 다시 호출하지 않고 append 전 값 + 1로 계산해 왕복 호출을 줄인다
+        const newRowIndex = lastRowBeforeAppend + 1;
         // 전화번호 칸이 '자동' 서식이면 010으로 시작하는 숫자만 있는 값이 숫자로 인식되어 앞자리 0이 사라지므로, 쓴 직후 텍스트 서식으로 다시 고정해 덮어쓴다
         const phoneColumnIndex = indexByName['연락처'];
         if (phoneColumnIndex) {
             fallbackSheet
-                .getRange(fallbackSheet.getLastRow(), phoneColumnIndex)
+                .getRange(newRowIndex, phoneColumnIndex)
                 .setNumberFormat('@')
                 .setValue(phone);
         }
@@ -265,8 +283,12 @@ function doPost(e) {
         }
 
         const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+        // 시트/헤더를 여기서 한 번만 읽어서, 중복확인(findMostRecentApplicationDate)과
+        // 실제 저장(appendRowByHeader)이 같은 값을 재사용하도록 한다 (왕복 호출 절반 이하로 축소)
+        const integratedSheet = getOrCreateIntegratedSheet(spreadsheet);
+        const indexByName = getHeaderColumnIndexes(integratedSheet);
 
-        const lastApplicationDate = findMostRecentApplicationDate(spreadsheet, phone);
+        const lastApplicationDate = findMostRecentApplicationDate(integratedSheet, indexByName, phone);
         if (lastApplicationDate) {
             const daysSinceLastApplication =
                 (Date.now() - lastApplicationDate.getTime()) / (1000 * 60 * 60 * 24);
@@ -282,19 +304,27 @@ function doPost(e) {
         }
 
         const now = new Date();
-        const integratedSheet = getOrCreateIntegratedSheet(spreadsheet);
-        const integratedNumber = integratedSheet.getLastRow();
-        const indexByName = appendRowByHeader(integratedSheet, {
-            번호: integratedNumber,
-            신청시간: now,
-            이름: name,
-            연락처: phone,
-            상담유형: selectedType,
-        });
+        const lastRowBeforeAppend = integratedSheet.getLastRow();
+        const integratedNumber = lastRowBeforeAppend;
+        appendRowByHeader(
+            integratedSheet,
+            {
+                번호: integratedNumber,
+                신청시간: now,
+                이름: name,
+                연락처: phone,
+                상담유형: selectedType,
+            },
+            indexByName,
+        );
+
+        // 스크립트 락을 잡고 있는 동안에는 동시 쓰기가 없으므로, 방금 추가된 행 번호는
+        // getLastRow()를 다시 호출하지 않고 append 전 값 + 1로 계산해 왕복 호출을 줄인다
+        const newRowIndex = lastRowBeforeAppend + 1;
         const phoneColumnIndex = indexByName['연락처'];
         if (phoneColumnIndex) {
             integratedSheet
-                .getRange(integratedSheet.getLastRow(), phoneColumnIndex)
+                .getRange(newRowIndex, phoneColumnIndex)
                 .setNumberFormat('@')
                 .setValue(phone);
         }
