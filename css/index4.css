@@ -18,7 +18,7 @@ body {
     max-width: 480px;
     margin: 0 auto;
     color: var(--ink);
-    padding: 24px;
+    padding: 12px;
     letter-spacing: -0.05em;
     word-break: keep-all;
 }
@@ -42,8 +42,8 @@ body {
     display: block;
     width: 100%;
     height: auto;
-    /* 원본 이미지(800x500) 비율 그대로 축소하는 대신, 높이만 2/3로 잘라 보여준다(가로폭은 유지, object-fit으로 크롭) */
-    aspect-ratio: 800 / 375;
+    /* im-20_02.gif 원본 크기(1000x750, 4:3)에 맞춘 비율 */
+    aspect-ratio: 1000 / 750;
     object-fit: cover;
     object-position: top;
 }
@@ -1091,6 +1091,10 @@ body {
 
 /* 아이폰 14 Pro(393px) 등 좁은 폰 화면 대응 */
 @media (max-width: 400px) {
+    body {
+        padding: 8px;
+    }
+
     .item,
     .form-section,
     .recent-applicants {
