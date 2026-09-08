@@ -158,18 +158,6 @@ function logToFallbackSheet(spreadsheet, name, phone, selectedType, reason) {
             },
             indexByName,
         );
-
-        // 스크립트 락을 잡고 있는 동안에는 동시 쓰기가 없으므로, 방금 추가된 행 번호는
-        // getLastRow()를 다시 호출하지 않고 append 전 값 + 1로 계산해 왕복 호출을 줄인다
-        const newRowIndex = lastRowBeforeAppend + 1;
-        // 전화번호 칸이 '자동' 서식이면 010으로 시작하는 숫자만 있는 값이 숫자로 인식되어 앞자리 0이 사라지므로, 쓴 직후 텍스트 서식으로 다시 고정해 덮어쓴다
-        const phoneColumnIndex = indexByName['연락처'];
-        if (phoneColumnIndex) {
-            fallbackSheet
-                .getRange(newRowIndex, phoneColumnIndex)
-                .setNumberFormat('@')
-                .setValue(phone);
-        }
     } catch (fallbackError) {
         console.error('fallback_log_error', fallbackError);
     }
@@ -319,19 +307,6 @@ function doPost(e) {
             },
             indexByName,
         );
-
-        // 스크립트 락을 잡고 있는 동안에는 동시 쓰기가 없으므로, 방금 추가된 행 번호는
-        // getLastRow()를 다시 호출하지 않고 append 전 값 + 1로 계산해 왕복 호출을 줄인다
-        const newRowIndex = lastRowBeforeAppend + 1;
-        const phoneColumnIndex = indexByName['연락처'];
-        if (phoneColumnIndex) {
-            integratedSheet
-                .getRange(newRowIndex, phoneColumnIndex)
-                .setNumberFormat('@')
-                .setValue(phone);
-        }
-
-        CacheService.getScriptCache().remove(RECENT_APPLICANTS_CACHE_KEY);
 
         return ContentService.createTextOutput('success');
     } catch (error) {
