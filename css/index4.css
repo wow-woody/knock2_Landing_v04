@@ -1,16 +1,17 @@
 :root {
-    --bg: #ffffff;
-    --ink: #16233f;
-    --sub: #5b6b85;
-    --navy-card: #f9fdfc;
-    --navy-line: rgba(14, 107, 99, 0.16);
-    --gold: #0e6b63;
-    --gold-soft: #14a394;
-    --gold-deep: #0b5c53;
+    --bg: #fff8ec;
+    --ink: #3a2418;
+    --sub: #9c7a5c;
+    --orange-card: #fff3de;
+    --orange-line: rgba(226, 98, 47, 0.18);
+    --gold: #e2622f;
+    --gold-soft: #f2a24c;
+    --gold-deep: #b8391f;
+    --brown-deep: #5c2a15;
     --white: #ffffff;
-    --dark-ink: #10192b;
-    --card: #ffffff;
-    --red: #e5484d;
+    --dark-ink: #2a1a10;
+    --card: #fffdf8;
+    --red: #d9432b;
 }
 
 body {
@@ -31,11 +32,11 @@ body {
 .consult-hero-img p {
     margin: 0;
     overflow: hidden;
-    border: 2px solid var(--navy-line);
+    border: 2px solid var(--orange-line);
     border-radius: 24px;
     box-shadow:
-        0 10px 24px rgba(14, 107, 99, 0.08),
-        0 2px 6px rgba(14, 107, 99, 0.05);
+        0 10px 24px rgba(226, 98, 47, 0.08),
+        0 2px 6px rgba(226, 98, 47, 0.05);
 }
 
 .consult-hero-img img {
@@ -57,8 +58,8 @@ body {
     width: 100%;
     box-sizing: border-box;
     margin: 2px 0 16px;
-    background: var(--navy-card);
-    border: 2px solid var(--navy-line);
+    background: var(--orange-card);
+    border: 2px solid var(--orange-line);
     border-radius: 14px;
     padding: 14px 16px;
     font-size: clamp(17px, 5vw, 20px);
@@ -78,17 +79,17 @@ body {
     position: relative;
     border-radius: 24px;
     margin-bottom: 18px;
-    background: var(--navy-card);
-    border: 2px solid var(--navy-line);
+    background: var(--orange-card);
+    border: 2px solid var(--orange-line);
     box-shadow:
-        0 10px 24px rgba(14, 107, 99,0.08),
-        0 2px 6px rgba(14, 107, 99,0.05);
+        0 10px 24px rgba(226, 98, 47,0.08),
+        0 2px 6px rgba(226, 98, 47,0.05);
     overflow: hidden;
     text-align: center;
 }
 
 .price-card-top {
-    background: linear-gradient(160deg, #eafaf5 0%, #ddf3ec 100%);
+    background: linear-gradient(160deg, #fff3de 0%, #ffe3ba 100%);
     padding: 28px 4px 28px;
     display: flex;
     align-items: center;
@@ -108,13 +109,13 @@ body {
     gap: 6px;
     max-width: 100%;
     box-sizing: border-box;
-    background: rgba(14, 107, 99,0.1);
+    background: rgba(226, 98, 47,0.1);
     color: var(--gold);
     font-weight: 700;
     font-size: clamp(13px, 3.8vw, 22px);
     padding: 7px 14px;
     border-radius: 99px;
-    border: 1.5px solid rgba(14, 107, 99,0.35);
+    border: 1.5px solid rgba(226, 98, 47,0.35);
     margin-bottom: 12px;
     white-space: nowrap;
 }
@@ -141,7 +142,7 @@ body {
     box-sizing: border-box;
     text-align: center;
     margin-left: 2px;
-    background: rgba(14, 107, 99,0.08);
+    background: rgba(226, 98, 47,0.08);
     color: var(--ink);
     font-weight: 700;
     font-size: clamp(12px, 3vw, 19px);
@@ -154,8 +155,8 @@ body {
     flex: 0 0 auto;
     width: clamp(80px, 28%, 132px);
     aspect-ratio: 2.48/3.5;
-    background: rgba(14, 107, 99,0.05);
-    border: 1.5px solid rgba(14, 107, 99,0.28);
+    background: rgba(226, 98, 47,0.05);
+    border: 1.5px solid rgba(226, 98, 47,0.28);
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -172,7 +173,7 @@ body {
 
 .price-card-body {
     padding: 20px 20px 24px;
-    border: 1px solid var(--navy-line);
+    border: 1px solid var(--orange-line);
     border-top: none;
     border-radius: 0 0 22px 22px;
 }
@@ -256,7 +257,7 @@ body {
     font-weight: 700;
     color: var(--dark-ink);
     line-height: 1.4;
-    box-shadow: 0 2px 8px rgba(14, 107, 99,0.08);
+    box-shadow: 0 2px 8px rgba(226, 98, 47,0.08);
 }
 
 .price-card-included input[type='checkbox'] {
@@ -293,8 +294,8 @@ body {
     gap: 6px;
     width: fit-content;
     margin: 14px auto 10px;
-    background: rgba(14, 107, 99,0.1);
-    border: 1px solid rgba(14, 107, 99,0.3);
+    background: rgba(226, 98, 47,0.1);
+    border: 1px solid rgba(226, 98, 47,0.3);
     color: var(--gold);
     font-size: 0.82rem;
     font-weight: 600;
@@ -322,12 +323,12 @@ body {
     width: 100%;
     padding: 24px;
     margin-bottom: 18px;
-    border: 2px solid var(--navy-line);
+    border: 2px solid var(--orange-line);
     border-radius: 28px;
-    background: var(--navy-card);
+    background: #fffaea;
     box-shadow:
-        0 10px 24px rgba(14, 107, 99,0.08),
-        0 2px 6px rgba(14, 107, 99,0.05);
+        0 10px 24px rgba(226, 98, 47,0.08),
+        0 2px 6px rgba(226, 98, 47,0.05);
     box-sizing: border-box;
 }
 
@@ -347,8 +348,8 @@ body {
     margin: 0;
     padding: 8px 12px;
     border-radius: 999px;
-    background: rgba(14, 107, 99,0.1);
-    border: 1px solid rgba(14, 107, 99,0.3);
+    background: rgba(226, 98, 47,0.1);
+    border: 1px solid rgba(226, 98, 47,0.3);
     color: var(--gold);
     font-size: 0.95rem;
     font-weight: 700;
@@ -360,8 +361,8 @@ body {
     gap: 6px;
     height: 33px;
     margin: 0 auto;
-    background: rgba(14, 107, 99,0.1);
-    border: 1px solid rgba(14, 107, 99,0.3);
+    background: rgba(226, 98, 47,0.1);
+    border: 1px solid rgba(226, 98, 47,0.3);
     color: var(--gold);
     font-size: 0.82rem;
     font-weight: 600;
@@ -386,8 +387,8 @@ body {
     width: fit-content;
     height: 33px;
     margin: 0 auto;
-    background: rgba(14, 107, 99,0.1);
-    border: 1px solid rgba(14, 107, 99,0.3);
+    background: rgba(226, 98, 47,0.1);
+    border: 1px solid rgba(226, 98, 47,0.3);
     color: var(--gold);
     font-size: 0.82rem;
     font-weight: 600;
@@ -403,7 +404,7 @@ body {
     gap: 8px;
     width: fit-content;
     height: 33px;
-    margin: -10px auto 0;
+    margin: 0 auto;
     padding: 0 16px;
     border-radius: 999px;
     background: rgba(229, 72, 77, 0.08);
@@ -488,12 +489,12 @@ body {
 .choice-select:focus-visible {
     outline: none;
     border-color: var(--gold);
-    box-shadow: 0 0 0 4px rgba(14, 107, 99, 0.15);
+    box-shadow: 0 0 0 4px rgba(226, 98, 47, 0.15);
 }
 
 .choice-select.is-open {
     border-color: var(--gold);
-    box-shadow: 0 0 0 4px rgba(14, 107, 99, 0.15);
+    box-shadow: 0 0 0 4px rgba(226, 98, 47, 0.15);
 }
 
 .choice-select__arrow {
@@ -522,11 +523,11 @@ body {
     display: grid;
     gap: 4px;
     background: var(--card);
-    border: 2px solid var(--navy-line);
+    border: 2px solid var(--orange-line);
     border-radius: 16px;
     box-shadow:
-        0 16px 32px rgba(14, 107, 99, 0.18),
-        0 4px 10px rgba(14, 107, 99, 0.08);
+        0 16px 32px rgba(226, 98, 47, 0.18),
+        0 4px 10px rgba(226, 98, 47, 0.08);
     animation: choice-options-pop 0.15s ease;
 }
 
@@ -562,11 +563,11 @@ body {
 }
 
 .choice-option:hover {
-    background: rgba(14, 107, 99, 0.08);
+    background: rgba(226, 98, 47, 0.08);
 }
 
 .choice-option.is-selected {
-    background: rgba(14, 107, 99, 0.12);
+    background: rgba(226, 98, 47, 0.12);
     color: var(--gold-deep);
 }
 
@@ -633,7 +634,7 @@ body {
 
 .field input:focus {
     border-color: var(--gold);
-    box-shadow: 0 0 0 4px rgba(14, 107, 99,0.15);
+    box-shadow: 0 0 0 4px rgba(226, 98, 47,0.15);
 }
 
 .field input::placeholder {
@@ -664,7 +665,7 @@ body {
 }
 
 .agree-panel {
-    background: rgba(14, 107, 99,0.04);
+    background: rgba(226, 98, 47,0.04);
     border-radius: 12px;
     overflow: hidden;
 }
@@ -685,7 +686,7 @@ body {
     margin-top: 2px;
     flex-shrink: 0;
     position: relative;
-    border: 2px solid var(--navy-line);
+    border: 2px solid var(--orange-line);
     border-radius: 50%;
     background: transparent;
     cursor: pointer;
@@ -729,7 +730,7 @@ body {
     justify-content: space-between;
     padding: 8px 16px;
     border: 0;
-    border-top: 1px solid rgba(14, 107, 99,0.1);
+    border-top: 1px solid rgba(226, 98, 47,0.1);
     background: none;
     color: var(--sub);
     font-family: inherit;
@@ -755,8 +756,8 @@ body {
 
 .agree-panel__detail {
     padding: 12px 16px 14px;
-    border-top: 1px solid rgba(14, 107, 99,0.1);
-    background: rgba(14, 107, 99,0.03);
+    border-top: 1px solid rgba(226, 98, 47,0.1);
+    background: rgba(226, 98, 47,0.03);
     color: var(--sub);
     font-size: 0.78rem;
 }
@@ -848,12 +849,12 @@ body {
     gap: 16px;
     width: 100%;
     padding: 24px;
-    border: 2px solid var(--navy-line);
+    border: 2px solid var(--orange-line);
     border-radius: 28px;
-    background: var(--navy-card);
+    background: var(--orange-card);
     box-shadow:
-        0 10px 24px rgba(14, 107, 99,0.08),
-        0 2px 6px rgba(14, 107, 99,0.05);
+        0 10px 24px rgba(226, 98, 47,0.08),
+        0 2px 6px rgba(226, 98, 47,0.05);
     box-sizing: border-box;
 }
 
@@ -875,7 +876,7 @@ body {
 
 .recent-applicants-head {
     height: 44px;
-    background: rgba(14, 107, 99,0.1);
+    background: rgba(226, 98, 47,0.1);
     color: var(--gold);
     font-size: 0.82rem;
     font-weight: 700;
@@ -899,7 +900,7 @@ body {
     margin-top: -16px;
     max-height: 200px;
     overflow: hidden;
-    border: 1px solid rgba(14, 107, 99,0.3);
+    border: 1px solid rgba(226, 98, 47,0.3);
     border-top: 0;
     border-radius: 0 0 14px 14px;
 }
@@ -927,7 +928,7 @@ body {
 .recent-applicants-empty {
     margin: 0;
     padding: 24px;
-    border: 1px dashed var(--navy-line);
+    border: 1px dashed var(--orange-line);
     border-radius: 20px;
     text-align: center;
     color: var(--sub);
@@ -936,8 +937,9 @@ body {
 /* ---- 하단 사업자 정보 ---- */
 .consult-footer {
     margin-top: 20px;
-    background: rgba(14, 107, 99, 0.04);
-    /* border: 2px solid var(--navy-line); */
+    background: #fffaea;
+    /* background: rgba(226, 98, 47, 0.08); */
+    /* border: 2px solid var(--orange-line); */
     border-radius: 12px;
     overflow: hidden;
 }
@@ -975,9 +977,11 @@ body {
 }
 
 .consult-footer__text {
+    -webkit-user-select: none;
+    user-select: none;
     margin: 0;
     padding: 0 16px 14px;
-    border-top: 1px solid rgba(14, 107, 99, 0.1);
+    border-top: 1px solid rgba(226, 98, 47, 0.1);
     padding-top: 12px;
     color: var(--sub);
     font-size: 0.74rem;
@@ -1033,10 +1037,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-bottom: 8px;
     font-size: 1.8rem;
     line-height: 1;
-    background: rgba(14, 107, 99,0.12);
+    background: rgba(226, 98, 47,0.12);
     border-radius: 999px;
 }
 

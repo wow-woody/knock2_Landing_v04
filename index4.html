@@ -25,11 +25,12 @@
 </head>
 
 <body>
+
     <!-- Google Tag Manager (noscript): 위 head 코드와 같은 GTM ID로 교체 필요 -->
-    <!-- ※ PHP로 합칠 때 주의: 이 noscript 블록도 두 파일에 각 1개씩 있음. 합친 파일에는 body 시작 직후에 딱 1개만 남길 것 -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+     
     <section class="consult-hero-img">
         <p>
             <img src="https://knockknockplant.co.kr/landing/00-test/landing_v04/im-20_02.gif" alt="">
@@ -39,11 +40,6 @@
     <section class="item">
         <div class="item__top">
             <h2 class="choice-heading">👉 원하시는 항목을 선택해 주세요</h2>
-        </div>
-        <div class="event-remaining">
-            <span class="event-remaining__dot" aria-hidden="true"></span>
-            <p class="event-remaining__text">남은 이벤트 수량: <span class="event-remaining__count"
-                    id="event-remaining-count">78</span><span class="event-remaining__unit">개</span></p>
         </div>
         <div class="choice-select-wrap">
             <button type="button" class="choice-select" id="choice-select-btn" aria-haspopup="listbox"
@@ -61,7 +57,12 @@
     </section>
 
     <section class="form-section">
-        <p class="eyebrow">📝 상담 신청</p>
+        <!-- <p class="eyebrow">📝 상담 신청</p> -->
+        <div class="event-remaining">
+            <span class="event-remaining__dot" aria-hidden="true"></span>
+            <p class="event-remaining__text">남은 이벤트 수량: <span class="event-remaining__count"
+                    id="event-remaining-count">78</span><span class="event-remaining__unit">개</span></p>
+        </div>
 
         <!-- <div class="section-heading">
             <h2>임플란트 20만원 혜택 받으세요</h2>
