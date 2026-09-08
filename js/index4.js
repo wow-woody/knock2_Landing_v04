@@ -603,11 +603,10 @@ async function submitConsultForm(event) {
 
     const formData = new FormData(form);
     const name = String(formData.get('name') || '').trim();
-    const phone = normalizePhone(String(formData.get('phone') || '').trim());
+    const phoneDisplay = String(formData.get('phone') || '').trim();
+    const phone = normalizePhone(phoneDisplay);
     const agree = formData.get('agree') === 'on';
     const selectedType = String((selectedTypeInput && selectedTypeInput.value) || '').trim() || '1개~2개 임플란트';
-
-    formData.set('selectedType', selectedType);
 
     if (!name || !phone) {
         showModal({
@@ -655,16 +654,20 @@ async function submitConsultForm(event) {
         submitButton.textContent = '전송 중...';
     }
 
-    let resultText = '';
     try {
-        const response = await fetch(API_URL, {
+        await fetch(API_URL, {
             method: 'POST',
-            body: formData,
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // GAS CORS 우회용 (실제 내용은 JSON)
+            body: JSON.stringify({
+                '탭': '55HID3',            // 고정 탭: 기존에 만들어둔 "55HID3" 탭에 저장
+                '이름': name,
+                '연락처': phoneDisplay,
+                '시술종류': selectedType,   // 선택한 항목을 시술종류로도 재사용
+                '시술시기': '',             // 폼에서 안 받는 값이라 빈 값
+            }),
         });
-        resultText = (await response.text()).trim();
     } catch (error) {
         console.error('submit_consult_form_error', error);
-        resultText = 'network_error';
     }
 
     waitingForResponse = false;
@@ -673,28 +676,7 @@ async function submitConsultForm(event) {
         submitButton.textContent = '맞춤 견적 알아보기';
     }
 
-    if (resultText === 'rate_limited') {
-        showModal({
-            icon: '⚠️',
-            title: '이미 신청을 하셨습니다',
-            message: '잠시 후 다시 시도해주세요.',
-            tone: 'warning',
-        });
-        return;
-    }
-
-    // if (resultText === 'already_applied') {
-    //     showModal({
-    //         icon: '⚠️',
-    //         title: '이미 신청을 하셨습니다',
-    //         message: '동일한 연락처는 1주일 후에 다시 신청하실 수 있습니다.',
-    //         tone: 'warning',
-    //     });
-    //     return;
-    // }
-
-    // rate_limited/already_applied를 제외한 나머지(성공/서버 내부 오류/네트워크 오류)는 결과와 무관하게 완료 메시지를 유지한다.
-    // 서버 내부 오류는 doPost에서 DB로스 시트로 백업되므로 신청 데이터 자체는 유실되지 않는다.
+    // 서버가 result:'error'를 줘도 사용자에게는 완료 메시지를 유지한다 (재시도 유도보다 이탈 방지 우선)
     form.reset();
     setChoiceValue(DEFAULT_CHOICE_VALUE);
     loadConsultationList();

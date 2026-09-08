@@ -2,7 +2,7 @@
 <html lang="ko">
 
 <head>
-    <!-- Google Tag Manager: GTM-XXXXXXX는 실제 발급받은 컨테이너 ID로 교체 필요 -->
+    <!-- Google Tag Manager: GTM-T2LGWFWP -->
     <script>(function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
                 'gtm.start':
@@ -10,7 +10,7 @@
             }); var f = d.getElementsByTagName(s)[0],
                 j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-XXXXXXX');</script>
+        })(window, document, 'script', 'dataLayer', 'GTM-T2LGWFWP');</script>
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1139,7 +1139,7 @@
 
 <body>
     <!-- Google Tag Manager (noscript): 위 head 코드와 같은 GTM ID로 교체 필요 -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0"
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T2LGWFWP" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
@@ -1184,7 +1184,7 @@
 
         <!--구글시트탭: 웹앱 URL 주소-->
         <form class="consult-form" id="consult-form"
-            action="https://script.google.com/macros/s/AKfycbxJ4XFbV8UYyUKaeX-Mw3XB1-O9ukw6qcWH9kY-fiFdH0JuAbV5XDtWSk6VTaG5J8vv_Q/exec"
+            action="https://script.google.com/macros/s/AKfycbxl65MD_NVxYdoWicfblvEm45nPeoFQ1TGi9FEK7F8SNmDHtsbqlHsDC6YNRuHKcEVd/exec"
             method="post">
             <input type="hidden" id="selected-type" name="selectedType" value="1개~2개 임플란트">
             <input type="hidden" id="client-ip" name="ip" value="">
@@ -1880,11 +1880,10 @@
 
             const formData = new FormData(form);
             const name = String(formData.get('name') || '').trim();
-            const phone = normalizePhone(String(formData.get('phone') || '').trim());
+            const phoneDisplay = String(formData.get('phone') || '').trim();
+            const phone = normalizePhone(phoneDisplay);
             const agree = formData.get('agree') === 'on';
             const selectedType = String((selectedTypeInput && selectedTypeInput.value) || '').trim() || '1개~2개 임플란트';
-
-            formData.set('selectedType', selectedType);
 
             if (!name || !phone) {
                 showModal({
@@ -1932,16 +1931,20 @@
                 submitButton.textContent = '전송 중...';
             }
 
-            let resultText = '';
             try {
-                const response = await fetch(API_URL, {
+                await fetch(API_URL, {
                     method: 'POST',
-                    body: formData,
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // GAS CORS 우회용 (실제 내용은 JSON)
+                    body: JSON.stringify({
+                        '탭': '55HID3',            // 고정 탭: 기존에 만들어둔 "55HID3" 탭에 저장
+                        '이름': name,
+                        '연락처': phoneDisplay,
+                        '시술종류': selectedType,   // 선택한 항목을 시술종류로도 재사용
+                        '시술시기': '',             // 폼에서 안 받는 값이라 빈 값
+                    }),
                 });
-                resultText = (await response.text()).trim();
             } catch (error) {
                 console.error('submit_consult_form_error', error);
-                resultText = 'network_error';
             }
 
             waitingForResponse = false;
@@ -1950,18 +1953,7 @@
                 submitButton.textContent = '맞춤 견적 알아보기';
             }
 
-            if (resultText === 'rate_limited') {
-                showModal({
-                    icon: '⚠️',
-                    title: '이미 신청을 하셨습니다',
-                    message: '잠시 후 다시 시도해주세요.',
-                    tone: 'warning',
-                });
-                return;
-            }
-
-            // rate_limited를 제외한 나머지(성공/서버 내부 오류/네트워크 오류)는 결과와 무관하게 완료 메시지를 유지한다.
-            // 서버 내부 오류는 doPost에서 DB로스 시트로 백업되므로 신청 데이터 자체는 유실되지 않는다.
+            // 서버가 result:'error'를 줘도 사용자에게는 완료 메시지를 유지한다 (재시도 유도보다 이탈 방지 우선)
             form.reset();
             setChoiceValue(DEFAULT_CHOICE_VALUE);
             loadConsultationList();
